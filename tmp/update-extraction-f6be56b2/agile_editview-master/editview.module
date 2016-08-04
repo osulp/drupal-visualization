@@ -1,0 +1,112 @@
+<?php
+
+/**
+ * @file
+ * Plug-in to make an editable node view.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function editview_views_api() {
+  return array(
+    'api' => 3.0,
+    'path' => drupal_get_path('module', 'editview') . '/includes',
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function editview_menu() {
+  $items['editview_js'] = array(
+    'page callback' => 'editview_js',
+    'type' => MENU_CALLBACK,
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function editview_theme() {
+  return array(
+    'editview_custom_node_form' => array(
+      'render element' => 'form',
+      'file' => 'editview.theme.inc',
+      'path' => drupal_get_path('module', 'editview') . '/theme',
+    ),
+  );
+}
+
+/**
+ * Implements hook_forms().
+ */
+function editview_forms($form_id, $args) {
+  $forms = array();
+  if (!strncmp($form_id, 'editview_node_form_', 19)) {
+    $forms[$form_id] = array(
+      'callback' => 'editview_node_form',
+    );
+  }
+  return $forms;
+}
+
+/**
+ * Proxy for the editview_form_after_build function.
+ */
+function editview_form_after_build_proxy($form, &$form_state) {
+  module_load_include('inc', 'editview', 'includes/editview.views');
+  return editview_form_after_build($form, $form_state);
+}
+
+/**
+ * Function callback; allow JavaScript to update node in view.
+ */
+function editview_js($form, $form_state) {
+  module_load_include('module', 'node');
+  // return $form;
+  if (isset($form_state['values']['nid'])) {
+    $title_type = 'title';
+    $object_type = 'node';
+  }
+  elseif (isset($form_state['values']['tid'])) {
+    $title_type = 'name';
+    $object_type = 'taxonomy';
+  }
+  elseif (isset($form_state['values']['rid'])) {
+    $title_type = 'name';
+    $object_type = 'user';
+  }
+  $title = $form_state['values'][$title_type];
+  $nid = $_POST['editview_nid'];
+
+  switch ($object_type) {
+    case 'node':
+      $object = node_load($nid);
+      break;
+
+    case 'taxonomy':
+      $nid = $form_state['term']->tid;
+      $object = taxonomy_term_load($nid);
+
+      break;
+
+    case 'user' :
+      $object = user_load($nid);
+      break;
+  }
+
+  if ($object) {
+    if ($object_type == 'node') {
+      $object->changed = node_last_changed($nid);
+
+      $form['#storage']['entity'] = $object;
+    }
+    return $form;
+  }
+
+  $message = t("@title has been deleted", array('@title' => $title));
+  return "<div class='messages status'>$message</div>";
+}

@@ -88,6 +88,11 @@
               print drupal_render($main_menu_tree);
             ?>
           </div>
+		  <span id="menu-searchbar">
+		<?php
+			print render($page['searchbar']);
+		?>
+	  </span>
         </nav>
       </div>
     </header>
@@ -231,6 +236,7 @@
   <?php endif; ?>
 
   <footer id="copyright-wrap" class="clear">
-    <div id="copyright"><?php print t('Copyright'); ?> &copy; <?php echo date("Y"); ?>, <a href="<?php print $front_page; ?>"><?php print $site_name; ?></a>. <?php print t('Theme by'); ?>  <a href="http://www.devsaran.com" title="Devsaran" target="_blank">Devsaran</a>.</div>
+    <!--<div id="copyright"><?php print t('Copyright'); ?> &copy; <?php echo date("Y"); ?>, <a href="<?php print $front_page; ?>"><?php print $site_name; ?></a>.-->
+	<div id="copyright"><?php print t('Copyright'); ?> &copy; <?php echo date("Y"); ?>, <a href="<?php print "http://scarc.library.oregonstate.edu/index.html"; ?>"><?php print "Special Collections & Archives Research Center"; ?></a>.
   </footer>
 </div>

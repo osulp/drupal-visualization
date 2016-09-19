@@ -111,13 +111,51 @@ class ViewsEFFieldsetData {
         $field_name = $form['#info']['filter-' . $item['item']['id']]['value'];
 
         if(isset($form[$field_name]) && is_array($form[$field_name])) {
-          $element[$field_name] = $form[$field_name] +
+          $element[$field_name][$field_name] = $form[$field_name] +
             array(
               '#weight' => $item['item']['weight'],
-              '#title' => $form['#info']['filter-' . $item['item']['id']]['label']
+              '#title' => $form['#info']['filter-' . $item['item']['id']]['label'],
+              '#description' => $form['#info']['filter-' . $item['item']['id']]['description']
             );
+            if (!empty($form['#info']['filter-' . $item['item']['id']]['operator'])) {
+              $opname = $form['#info']['filter-' . $item['item']['id']]['operator'];
+              if (isset($form[$opname]) && is_array($form[$opname])) {
+                $element[$field_name][$opname] = $form[$opname] + 
+                  array(
+                    '#weight' => $item['item']['weight'],
+                    '#attributes' => array(
+                        'class' => array(
+                          'op_container',
+                        )
+                    ),
+                    '#title' =>  $form[$opname]['#title'],
+                        );
+				$element[$field_name][$field_name] = $form[$field_name] + 
+					array(
+					//'value' => array('#title' => $form['#info']['filter-' . $item['item']['id']]['label']),
+					'#weight' => $item['item']['weight'],
+					'#title' => t($form['#info']['filter-' . $item['item']['id']]['label']),
+					'#description' => $form['#info']['filter-' . $item['item']['id']]['description']              
+					);
+                $element[$field_name][$opname]['#title_display'] = 'before';
+              }
+              $element_fieldset = array(
+                '#type' => 'fieldset',
+                '#collapsible' => FALSE,
+                '#collapsed' => FALSE,
+                    '#attributes' => array(
+                        'class' => array(
+                          'group_container',
+                          )
+                        ),                
+              );
+              $element[$field_name] = array_merge($element[$field_name],$element_fieldset);
+            }          
           unset($form['#info']['filter-' . $item['item']['id']]);
           unset($form[$field_name]);
+          if(isset($opname)) {
+            unset($form[$opname]);
+          }
         }
       }
 

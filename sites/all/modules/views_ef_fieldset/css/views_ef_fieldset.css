@@ -3,5 +3,23 @@
 }
 
 .views-ef-fieldset-container .form-item {
-  display: inline-table;
+	float:left;
+ }
+
+.views-ef-fieldset-container .fieldset-wrapper fieldset.group_container {
+	float:left;
+	padding:0px;
+	margin:0px;
+	background:none;
+	border:none;
+}
+.views-ef-fieldset-container .fieldset-wrapper fieldset.group_container .fieldset-wrapper {
+	margin-top:22px;
+}
+.views-ef-fieldset-container .fieldset-wrapper fieldset.group_container .fieldset-wrapper label {
+	margin-top:-22px;
+}
+.views-ef-fieldset-container .fieldset-wrapper fieldset.group_container .form-item {
+	display:block;
+	clear:both;
 }

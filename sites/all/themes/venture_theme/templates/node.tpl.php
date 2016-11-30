@@ -68,6 +68,7 @@
  * variables. Otherwise they will have to explicitly specify the desired field
  * language, e.g. $node->body['en'], thus overriding any language negotiation
  * rule that was previously applied.
+ * this is a test
  *
  * @see template_preprocess()
  * @see template_preprocess_node()
